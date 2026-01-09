@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entradas>
+  <entrada>
+    <id>2</id>
+    <fecha>2025-12-02T16:08:36</fecha>
+    <estado>Feliz</estado>
+    <cancion>Vamonos de Kidd Keo</cancion>
+    <foto></foto>
+  </entrada>
+  <entrada>
+    <id>1</id>
+    <fecha>2025-12-02T16:02:05</fecha>
+    <estado>Feliz</estado>
+    <cancion>Vamonos</cancion>
+    <foto></foto>
+  </entrada>
+</entradas>
