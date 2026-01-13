@@ -10,7 +10,6 @@ import java.io.File;
 import java.time.LocalDateTime;
 import dao.IDiarioDAO;
 import dao.JDBCTransactionDAO;
-import javax.swing.DefaultListCellRenderer;
 
 
 public class NuevaEntradaFrame extends JFrame {
@@ -28,66 +27,64 @@ public class NuevaEntradaFrame extends JFrame {
     }
 
     private void initUI() {
-        // Ventana base
+
         setTitle("Nueva entrada");
         setSize(600, 800);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setResizable(false);
 
-        // Fondo degradado (igual que vuestras pantallas)
         GradientPanel background = new GradientPanel();
         background.setLayout(new BorderLayout());
         setContentPane(background);
 
-        // Panel principal centrado con padding
         JPanel content = new JPanel();
         content.setOpaque(false);
         content.setLayout(new BoxLayout(content, BoxLayout.Y_AXIS));
         content.setBorder(new EmptyBorder(25, 45, 25, 45));
 
-        // ---------- TÍTULO (CUENTA) ----------
-        JLabel lblTitulo = new JLabel("CUENTA");
+        // ===== TÍTULO =====
+        JLabel lblTitulo = new JLabel("Crea tu nueva entrada para el diario");
         lblTitulo.setAlignmentX(Component.CENTER_ALIGNMENT);
         lblTitulo.setForeground(Color.WHITE);
-        lblTitulo.setFont(new Font("SansSerif", Font.BOLD, 26));
+        lblTitulo.setFont(new Font("SansSerif", Font.BOLD, 24));
         content.add(lblTitulo);
-        content.add(Box.createVerticalStrut(30));
+        content.add(Box.createVerticalStrut(35));
 
-        // ---------- 1) ENCUENTRA TU CANCIÓN ----------
-        JLabel lblCancion = new JLabel("Encuentra tu canción!");
+        // ===== CANCIÓN (centrado bonito) =====
+        JPanel panelCancion = new JPanel();
+        panelCancion.setOpaque(false);
+        panelCancion.setLayout(new BoxLayout(panelCancion, BoxLayout.Y_AXIS));
+        panelCancion.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panelCancion.setMaximumSize(new Dimension(420, 70));
+
+        JLabel lblCancion = new JLabel("Canción");
         lblCancion.setForeground(Color.WHITE);
         lblCancion.setFont(new Font("SansSerif", Font.PLAIN, 16));
-        content.add(lblCancion);
-        content.add(Box.createVerticalStrut(8));
-
-        JPanel rowCancion = new JPanel(new BorderLayout(10, 0));
-        rowCancion.setOpaque(false);
+        lblCancion.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         txtCancion = new JTextField();
-        txtCancion.setEditable(false); // se rellena al seleccionar canción
-        txtCancion.setPreferredSize(new Dimension(10, 36));
+        txtCancion.setMaximumSize(new Dimension(420, 36));
 
-        JButton btnBuscarCancion = new JButton("Buscar");
-        btnBuscarCancion.setFocusPainted(false);
+        panelCancion.add(lblCancion);
+        panelCancion.add(Box.createVerticalStrut(6));
+        panelCancion.add(txtCancion);
 
-        rowCancion.add(txtCancion, BorderLayout.CENTER);
-        rowCancion.add(btnBuscarCancion, BorderLayout.EAST);
+        content.add(panelCancion);
+        content.add(Box.createVerticalStrut(30));
 
-        content.add(rowCancion);
-        content.add(Box.createVerticalStrut(25));
 
-        // Acción temporal (luego lo cambiáis por el buscador con iTunes)
-        btnBuscarCancion.addActionListener(e -> buscarCancionTemporal());
+        
 
-        // ---------- 2) MOOD ----------
+         // ===== MOOD =====
         JLabel lblMood = new JLabel("Selecciona tu mood:");
         lblMood.setForeground(Color.WHITE);
         lblMood.setFont(new Font("SansSerif", Font.PLAIN, 16));
         content.add(lblMood);
         content.add(Box.createVerticalStrut(8));
 
-       comboMood = new JComboBox<>();
+        comboMood = new JComboBox<>();
+        comboMood.setMaximumSize(new Dimension(Integer.MAX_VALUE, 36));
 
         comboMood.setRenderer(new DefaultListCellRenderer() {
             @Override
@@ -99,29 +96,25 @@ public class NuevaEntradaFrame extends JFrame {
 
                 if (value instanceof model.Mood) {
                     setText(((model.Mood) value).getNombre());
-                } else {
-                    setText("");
                 }
                 return this;
             }
         });
 
-        comboMood.setMaximumSize(new Dimension(Integer.MAX_VALUE, 36));
         content.add(comboMood);
         content.add(Box.createVerticalStrut(25));
 
-        // y DESPUÉS llamas a cargar los moods
         cargarMoodsDesdeBD();
 
-        // ---------- 3) FOTO OPCIONAL ----------
+        // ===== FOTO OPCIONAL =====
         JPanel rowFotoTitle = new JPanel(new BorderLayout());
         rowFotoTitle.setOpaque(false);
 
-        JLabel lblFoto = new JLabel("tienes ganas de insertar una foto?:");
+        JLabel lblFoto = new JLabel("¿Quieres añadir una foto?");
         lblFoto.setForeground(Color.WHITE);
         lblFoto.setFont(new Font("SansSerif", Font.PLAIN, 16));
 
-        JLabel lblOpcional = new JLabel("OPCIONAL!");
+        JLabel lblOpcional = new JLabel("OPCIONAL");
         lblOpcional.setForeground(new Color(230, 230, 230));
         lblOpcional.setFont(new Font("SansSerif", Font.BOLD, 14));
         lblOpcional.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -138,7 +131,6 @@ public class NuevaEntradaFrame extends JFrame {
         content.add(btnElegirFoto);
         content.add(Box.createVerticalStrut(12));
 
-        // “Óvalo/recuadro” grande del esbozo (simulado con label + borde)
         lblPreviewFoto = new JLabel("Sin foto", SwingConstants.CENTER);
         lblPreviewFoto.setOpaque(true);
         lblPreviewFoto.setBackground(new Color(255, 255, 255, 230));
@@ -152,8 +144,8 @@ public class NuevaEntradaFrame extends JFrame {
 
         btnElegirFoto.addActionListener(e -> elegirFoto());
 
-        // ---------- 4) DESAHÓGATE ----------
-        JLabel lblDesahogo = new JLabel("Desahogate!");
+        // ===== DESAHOGO =====
+        JLabel lblDesahogo = new JLabel("Desahógate");
         lblDesahogo.setForeground(Color.WHITE);
         lblDesahogo.setFont(new Font("SansSerif", Font.PLAIN, 16));
         content.add(lblDesahogo);
@@ -167,34 +159,16 @@ public class NuevaEntradaFrame extends JFrame {
         scroll.setMaximumSize(new Dimension(Integer.MAX_VALUE, 180));
         content.add(scroll);
 
-        content.add(Box.createVerticalStrut(25));
+        content.add(Box.createVerticalStrut(30));
 
-        // ---------- 5) GUARDAR ----------
+        // ===== GUARDAR =====
         RoundedButton btnGuardar =
                 new RoundedButton("guardar y subir a tu diario", new Color(150, 90, 255));
         btnGuardar.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnGuardar.addActionListener(e -> guardarEntrada());
         content.add(btnGuardar);
 
-        btnGuardar.addActionListener(e -> guardarEntrada());
-
-        // Meter todo al centro
         background.add(content, BorderLayout.CENTER);
-    }
-
-    /**
-     * Temporal: simula el buscador con un input simple.
-     * Luego esto lo cambiáis por el buscador con iTunes.
-     */
-    private void buscarCancionTemporal() {
-        String input = JOptionPane.showInputDialog(
-                this,
-                "Escribe la canción (ej: Vámonos - Kidd Keo):",
-                "Buscar canción (temporal)",
-                JOptionPane.QUESTION_MESSAGE
-        );
-        if (input != null && !input.trim().isEmpty()) {
-            txtCancion.setText(input.trim());
-        }
     }
 
     private void elegirFoto() {
