@@ -10,6 +10,7 @@ import java.io.File;
 import java.time.LocalDateTime;
 import dao.IDiarioDAO;
 import dao.JDBCTransactionDAO;
+import javax.swing.DefaultListCellRenderer;
 
 
 public class NuevaEntradaFrame extends JFrame {

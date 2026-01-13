@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diario>
+  <entrada>
+    <id>3</id>
+    <fecha>2026-01-12T20:45:27</fecha>
+    <mood_id>5</mood_id>
+    <user_id>1</user_id>
+    <cancion>marinero marinado</cancion>
+    <texto_diario>lerolero</texto_diario>
+    <ruta_foto/>
+  </entrada>
+  <entrada>
+    <id>2</id>
+    <fecha>2026-01-12T20:15:41</fecha>
+    <mood_id>1</mood_id>
+    <user_id>1</user_id>
+    <cancion>lala</cancion>
+    <texto_diario>lalalalala</texto_diario>
+    <ruta_foto/>
+  </entrada>
+  <entrada>
+    <id>1</id>
+    <fecha>2026-01-12T19:38:54</fecha>
+    <mood_id>1</mood_id>
+    <user_id>1</user_id>
+    <cancion>los vagos con los  vagos</cancion>
+    <texto_diario>dilotata</texto_diario>
+    <ruta_foto/>
+  </entrada>
+</diario>

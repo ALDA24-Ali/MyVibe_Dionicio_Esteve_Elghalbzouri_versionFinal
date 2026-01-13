@@ -18,5 +18,5 @@ public interface IDiarioDAO {
     // Obtiene todas las entradas de diario
     List<EntradaDiario> getAll();
     List<EntradaDiario> getByUserId(int userId);
-
+    
 }

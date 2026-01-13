@@ -5,6 +5,7 @@ import model.EntradaDiario;
 import model.UserSession;
 
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -179,7 +180,7 @@ public class JDBCTransactionDAO implements IDiarioDAO {
         return lista;// Devolvemos la lista con todas las entradas
     }
 
-    @Override
+@Override
 public List<EntradaDiario> getByUserId(int userId) {
     List<EntradaDiario> entradas = new ArrayList<>();
 
@@ -187,27 +188,31 @@ public List<EntradaDiario> getByUserId(int userId) {
         SELECT id, fecha, cancion, texto_diario, ruta_foto, mood_id, user_id
         FROM entries
         WHERE user_id = ?
-        ORDER BY fecha DESC
-    """;
+        ORDER BY fecha DESC """;
 
     try (Connection conn = getConnection();
          PreparedStatement ps = conn.prepareStatement(sql)) {
 
         ps.setInt(1, userId);
-        ResultSet rs = ps.executeQuery();
 
-        while (rs.next()) {
-            EntradaDiario e = new EntradaDiario(
-                    rs.getTimestamp("fecha").toLocalDateTime(),
-                    rs.getString("cancion"),
-                    rs.getString("texto_diario"),
-                    rs.getString("ruta_foto"),
-                    rs.getInt("mood_id"),
-                    rs.getInt("user_id")
-            );
+        try (ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
 
-            e.setId(rs.getInt("id"));
-            entradas.add(e);
+                java.sql.Timestamp ts = rs.getTimestamp("fecha");
+                LocalDateTime fecha = (ts != null) ? ts.toLocalDateTime() : null;
+
+                EntradaDiario e = new EntradaDiario(
+                        fecha,
+                        rs.getString("cancion"),
+                        rs.getString("texto_diario"),
+                        rs.getString("ruta_foto"),
+                        rs.getInt("mood_id"),
+                        rs.getInt("user_id")
+                );
+
+                e.setId(rs.getInt("id"));
+                entradas.add(e);
+            }
         }
 
     } catch (SQLException ex) {
@@ -216,6 +221,7 @@ public List<EntradaDiario> getByUserId(int userId) {
 
     return entradas;
 }
+
 
     @Override
     public boolean update(EntradaDiario e) {
@@ -233,7 +239,7 @@ public List<EntradaDiario> getByUserId(int userId) {
             ps.setString(3, e.getRutaFoto());
             ps.setInt(4, e.getMoodId());
             ps.setInt(5, e.getId());
-            ps.setInt(6, e.getUserId());
+            ps.setInt(6, UserSession.userId);
 
             return ps.executeUpdate() > 0;
 
@@ -242,5 +248,7 @@ public List<EntradaDiario> getByUserId(int userId) {
             return false;
         }
     }
+
+    
 
 }

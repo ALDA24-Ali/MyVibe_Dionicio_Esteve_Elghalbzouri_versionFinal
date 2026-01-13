@@ -3,6 +3,10 @@ package controlador;
 import model.UserSession;
 import javax.swing.*;
 import java.awt.*;
+import dao.IDiarioDAO;
+import dao.JDBCTransactionDAO;
+import dao.XMLExporter;
+
 
 public class UserHomeFrame extends JFrame {
 
@@ -23,7 +27,8 @@ public class UserHomeFrame extends JFrame {
 
         // Fondo degradado
         GradientPanel background = new GradientPanel();
-        background.setLayout(new BorderLayout());
+        background.setLayout(new BorderLayo
+            ut());
         setContentPane(background);
 
         //  ZONA SUPERIOR (texto)
@@ -95,6 +100,40 @@ public class UserHomeFrame extends JFrame {
        btnCrearEntrada.addActionListener(e -> new NuevaEntradaFrame().setVisible(true));
        btnVerDiario.addActionListener(e -> new DiarioFrame().setVisible(true));
         // btnEstadisticas.addActionListener(e -> new EstadisticasFrame().setVisible(true));
-        // btnRA.addActionListener(e -> new OpcionesRAFrame().setVisible(true));
+        btnRA.addActionListener(e -> { int userId = UserSession.userId;
+
+    if (userId <= 0) {
+        JOptionPane.showMessageDialog(this,
+                "No hay sesión iniciada. Inicia sesión primero.",
+                "Aviso",
+                JOptionPane.WARNING_MESSAGE);
+        return;
+    }
+
+    // 1) Leer entradas del usuario desde BD
+    dao.IDiarioDAO diarioDAO = new dao.JDBCTransactionDAO();
+
+    //Este método lo tienes que tener o crearlo (te lo dejo abajo)
+    java.util.List<model.EntradaDiario> entradas = diarioDAO.getByUserId(userId);
+
+    if (entradas == null || entradas.isEmpty()) {
+        JOptionPane.showMessageDialog(this,
+                "No tienes entradas guardadas para exportar.",
+                "Aviso",
+                JOptionPane.INFORMATION_MESSAGE);
+        return;
+    }
+
+    // 2) Exportar a XML
+    dao.XMLExporter exporter = new dao.XMLExporter();
+    boolean ok = exporter.exportToXML(entradas, "diario_export.xml");
+
+    JOptionPane.showMessageDialog(this,
+            ok ? "Exportado correctamente a diario_export.xml"
+               : "Error exportando el XML (mira consola).",
+            ok ? "OK" : "Error",
+            ok ? JOptionPane.INFORMATION_MESSAGE : JOptionPane.ERROR_MESSAGE);
+});
+
     }
 }
