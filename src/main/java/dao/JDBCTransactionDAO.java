@@ -8,6 +8,8 @@ import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 //En esta clase se implementan TODO los metodos que decia IDiarioDAO: Es la encargada de hablar con la base de datos mysql.
 //guarda, modifica, borra, y lee entradas del diario.
@@ -249,6 +251,41 @@ public List<EntradaDiario> getByUserId(int userId) {
         }
     }
 
-    
+    public Map<String, Integer> getMoodCountsByMonth(int year, int month) {
+    String sql = """
+        SELECT m.nombre AS mood, COUNT(*) AS total
+        FROM entries e
+        JOIN moods m ON e.mood_id = m.mood_id
+        WHERE e.user_id = ?
+          AND YEAR(e.fecha) = ?
+          AND MONTH(e.fecha) = ?
+        GROUP BY m.nombre
+        ORDER BY m.mood_id
+    """;
+
+    Map<String, Integer> result = new LinkedHashMap<>();
+
+    try (Connection conn = getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+
+        ps.setInt(1, UserSession.userId);
+        ps.setInt(2, year);
+        ps.setInt(3, month);
+
+        try (ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                String mood = rs.getString("mood");
+                int total = rs.getInt("total");
+                result.put(mood, total);
+            }
+        }
+
+    } catch (SQLException ex) {
+        ex.printStackTrace();
+    }
+
+    return result;
+}
+
 
 }
