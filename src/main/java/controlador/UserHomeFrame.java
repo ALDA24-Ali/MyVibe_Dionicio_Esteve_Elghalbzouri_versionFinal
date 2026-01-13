@@ -1,12 +1,14 @@
 package controlador;
 
 import model.UserSession;
+import view.EstadisticasFrame;
+
 import javax.swing.*;
 import java.awt.*;
 import dao.IDiarioDAO;
 import dao.JDBCTransactionDAO;
 import dao.XMLExporter;
-
+import dao.JDBCTransactionDAO;
 
 public class UserHomeFrame extends JFrame {
 
@@ -98,7 +100,11 @@ public class UserHomeFrame extends JFrame {
         // Aquí conectararemos las pantallas reales:
        btnCrearEntrada.addActionListener(e -> new NuevaEntradaFrame().setVisible(true));
        btnVerDiario.addActionListener(e -> new DiarioFrame().setVisible(true));
-        // btnEstadisticas.addActionListener(e -> new EstadisticasFrame().setVisible(true));
+       btnEstadisticas.addActionListener(e -> {
+            JDBCTransactionDAO dao = new JDBCTransactionDAO();
+            new EstadisticasFrame(dao).setVisible(true);
+        });
+
         btnRA.addActionListener(e -> { int userId = UserSession.userId;
 
     if (userId <= 0) {
