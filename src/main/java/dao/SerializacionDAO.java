@@ -14,11 +14,7 @@ public class SerializacionDAO implements IDiarioDAO { // DAO que usa serializaci
 
     private static final String FILE = "entradas.dat"; // Archivo donde se guardan las entradas
 
-
-    // ==========================
     //      MÉTODOS INTERNOS
-    // ==========================
-
 
     // Carga todas las entradas desde el archivo .dat
     private List<EntradaDiario> loadAllInternal() {
@@ -56,12 +52,7 @@ public class SerializacionDAO implements IDiarioDAO { // DAO que usa serializaci
         }
     }
 
-
-    // ==========================
     //            CRUD
-    // ==========================
-
-
     @Override
     public boolean insert(EntradaDiario e) {
         // Cargar lista existente
@@ -120,10 +111,7 @@ public class SerializacionDAO implements IDiarioDAO { // DAO que usa serializaci
     }
 
 
-    // ==========================
     //     EXTRA PARA RA4
-    // ==========================
-
 
     // Borra el archivo de datos completo
     public boolean clear() {
@@ -139,4 +127,10 @@ public class SerializacionDAO implements IDiarioDAO { // DAO que usa serializaci
             return false;
         }
     }
+
+    @Override
+public List<EntradaDiario> getByUserId(int userId) {
+    // No implementado en serialización por ahora
+    return List.of();
+}
 }

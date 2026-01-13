@@ -216,4 +216,11 @@ public class HibernateDAO implements IDiarioDAO { // DAO que usa Hibernate
             sessionFactory.close(); // Cerrar recursos de Hibernate
         } catch (Exception ignored) {} // Ignorar errores al cerrar
     }
+
+    @Override
+public List<EntradaDiario> getByUserId(int userId) {
+    // Implementación pendiente en Hibernate
+    return List.of();
+}
+
 }

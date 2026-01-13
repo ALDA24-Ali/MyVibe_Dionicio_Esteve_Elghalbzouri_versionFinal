@@ -8,7 +8,8 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.io.File;
 import java.time.LocalDateTime;
-import javax.swing.DefaultListCellRenderer;
+import dao.IDiarioDAO;
+import dao.JDBCTransactionDAO;
 
 
 public class NuevaEntradaFrame extends JFrame {
@@ -210,57 +211,64 @@ public class NuevaEntradaFrame extends JFrame {
     }
 
     private void guardarEntrada() {
-        // Validaciones básicas
-        String cancion = txtCancion.getText().trim();
-        String texto = txtDesahogo.getText().trim();
+    // Validaciones básicas
+    String cancion = txtCancion.getText().trim();
+    String texto = txtDesahogo.getText().trim();
 
-        if (texto.isEmpty()) {
-            JOptionPane.showMessageDialog(this,
-                    "El texto del diario no puede estar vacío.",
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        // ✅ Mood real desde BD (id real, no índice)
-        model.Mood moodSel = (model.Mood) comboMood.getSelectedItem();
-        if (moodSel == null) {
-            JOptionPane.showMessageDialog(this, "Selecciona un mood.", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        int moodId = moodSel.getId();
-
-        // UserId: de la sesión
-        int userId = UserSession.userId; // si no hay login, quedará 0
-        if (userId <= 0) {
-            JOptionPane.showMessageDialog(this,
-                    "No hay sesión iniciada (userId). Inicia sesión primero.",
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        // Creamos la entrada
-        EntradaDiario entrada = new EntradaDiario(
-                LocalDateTime.now(),
-                cancion.isEmpty() ? null : cancion,
-                texto,
-                rutaFotoSeleccionada,
-                moodId,
-                userId
-        );
-
-        // Por ahora solo confirmamos (más adelante conectamos con DAO)
+    if (texto.isEmpty()) {
         JOptionPane.showMessageDialog(this,
-                "Entrada creada \n" +
-                        "Canción: " + (entrada.getCancion() == null ? "(sin canción)" : entrada.getCancion()) + "\n" +
-                        "MoodId: " + entrada.getMoodId() + "\n" +
-                        "Foto: " + (entrada.getRutaFoto() == null ? "(sin foto)" : "OK") + "\n",
-                "Guardado (temporal)",
-                JOptionPane.INFORMATION_MESSAGE);
-
-        dispose();
+                "El texto del diario no puede estar vacío.",
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+        return;
     }
+
+    // Mood real desde BD (id real, no índice)
+    model.Mood moodSel = (model.Mood) comboMood.getSelectedItem();
+    if (moodSel == null) {
+        JOptionPane.showMessageDialog(this, "Selecciona un mood.", "Error", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+    int moodId = moodSel.getId();
+
+    // UserId: de la sesión
+    int userId = UserSession.userId; // si no hay login, quedará 0
+    if (userId <= 0) {
+        JOptionPane.showMessageDialog(this,
+                "No hay sesión iniciada (userId). Inicia sesión primero.",
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+
+    // Creamos la entrada
+    EntradaDiario entrada = new EntradaDiario(
+            LocalDateTime.now(),
+            cancion.isEmpty() ? null : cancion,
+            texto,
+            rutaFotoSeleccionada,
+            moodId,
+            userId
+    );
+
+    // Guardar en BD con JDBC (real)
+    dao.IDiarioDAO diarioDAO = new dao.JDBCTransactionDAO();
+    boolean ok = diarioDAO.insert(entrada);
+
+    if (ok) {
+        JOptionPane.showMessageDialog(this,
+                "Entrada guardada",
+                "Guardado",
+                JOptionPane.INFORMATION_MESSAGE);
+        dispose();
+    } else {
+        JOptionPane.showMessageDialog(this,
+                "No se pudo guardar la entrada",
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+    }
+}
+
 
     private void cargarMoodsDesdeBD() {
         dao.MoodDAO moodDAO = new dao.MoodDAO();

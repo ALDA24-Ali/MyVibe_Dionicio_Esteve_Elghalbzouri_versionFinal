@@ -79,41 +79,6 @@ public class JDBCTransactionDAO implements IDiarioDAO {
     return false;
 }
 
-    // ACTUALIZAR ENTRADA
-    @Override
-    public boolean update(EntradaDiario e) {
-     // Sentencia SQL para actualizar una entrada existente
-    // Solo se actualizará si:
-    // - el ID de la entrada coincide y pertenece al usuario logueado
-        String sql = "UPDATE entries SET cancion=?, texto_diario=?, ruta_foto=?, mood_id=? " +
-                     "WHERE id=? AND user_id=?";
-
-     // Abrimos conexión con la base de datos
-    // y preparamos la consulta SQL:
-        try (Connection conn = getConnection();
-             PreparedStatement st = conn.prepareStatement(sql)) {
-
-        // Rellenamos los datos nuevos de la entrada
-        st.setString(1, e.getCancion());        // nueva canción
-        st.setString(2, e.getTextoDiario());    // nuevo texto
-        st.setString(3, e.getRutaFoto());       // nueva ruta de imagen
-        st.setInt(4, e.getMoodId());            // nuevo estado de ánimo
-
-        // Indicamos qué entrada se quiere actualizar
-        st.setInt(5, e.getId());    // ID de la entrada
-         
-        st.setInt(6, UserSession.userId);// Indicamos que solo se actualice si es del usuario logueado
-            
-        // Ejecuta el UPDATE:
-        // devuelve cuántas filas han sido modificadas
-        return st.executeUpdate() > 0;
-
-        } catch (Exception ex) {
-            ex.printStackTrace();//si hay error, se imprime en consola
-            return false;
-        }
-    }
-
     // BORRAR ENTRADA (solo del usuario)
     @Override
     public boolean delete(int id) {//recibe el id de la entrada a borrar.
@@ -213,4 +178,69 @@ public class JDBCTransactionDAO implements IDiarioDAO {
 
         return lista;// Devolvemos la lista con todas las entradas
     }
+
+    @Override
+public List<EntradaDiario> getByUserId(int userId) {
+    List<EntradaDiario> entradas = new ArrayList<>();
+
+    String sql = """
+        SELECT id, fecha, cancion, texto_diario, ruta_foto, mood_id, user_id
+        FROM entries
+        WHERE user_id = ?
+        ORDER BY fecha DESC
+    """;
+
+    try (Connection conn = getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+
+        ps.setInt(1, userId);
+        ResultSet rs = ps.executeQuery();
+
+        while (rs.next()) {
+            EntradaDiario e = new EntradaDiario(
+                    rs.getTimestamp("fecha").toLocalDateTime(),
+                    rs.getString("cancion"),
+                    rs.getString("texto_diario"),
+                    rs.getString("ruta_foto"),
+                    rs.getInt("mood_id"),
+                    rs.getInt("user_id")
+            );
+
+            e.setId(rs.getInt("id"));
+            entradas.add(e);
+        }
+
+    } catch (SQLException ex) {
+        ex.printStackTrace();
+    }
+
+    return entradas;
+}
+
+    @Override
+    public boolean update(EntradaDiario e) {
+        String sql = """
+            UPDATE entries
+            SET cancion = ?, texto_diario = ?, ruta_foto = ?, mood_id = ?
+            WHERE id = ? AND user_id = ?
+        """;
+
+        try (Connection conn = getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, e.getCancion());
+            ps.setString(2, e.getTextoDiario());
+            ps.setString(3, e.getRutaFoto());
+            ps.setInt(4, e.getMoodId());
+            ps.setInt(5, e.getId());
+            ps.setInt(6, e.getUserId());
+
+            return ps.executeUpdate() > 0;
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return false;
+        }
+    }
+
 }

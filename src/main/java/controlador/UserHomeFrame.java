@@ -93,7 +93,7 @@ public class UserHomeFrame extends JFrame {
 
         // Aquí conectararemos las pantallas reales:
        btnCrearEntrada.addActionListener(e -> new NuevaEntradaFrame().setVisible(true));
-        // btnVerDiario.addActionListener(e -> new DiarioFrame().setVisible(true));
+       btnVerDiario.addActionListener(e -> new DiarioFrame().setVisible(true));
         // btnEstadisticas.addActionListener(e -> new EstadisticasFrame().setVisible(true));
         // btnRA.addActionListener(e -> new OpcionesRAFrame().setVisible(true));
     }
