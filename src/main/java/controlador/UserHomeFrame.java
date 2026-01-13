@@ -27,8 +27,7 @@ public class UserHomeFrame extends JFrame {
 
         // Fondo degradado
         GradientPanel background = new GradientPanel();
-        background.setLayout(new BorderLayo
-            ut());
+        background.setLayout(new BorderLayout());
         setContentPane(background);
 
         //  ZONA SUPERIOR (texto)
