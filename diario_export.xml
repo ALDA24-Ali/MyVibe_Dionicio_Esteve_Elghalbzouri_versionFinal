@@ -1,39 +1,66 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <diario>
   <entrada>
-    <id>6</id>
-    <fecha>2026-01-13T19:25:03</fecha>
-    <mood_id>4</mood_id>
+    <id>7</id>
+    <fecha>2026-01-14T11:29:45</fecha>
+    <mood_id>3</mood_id>
     <user_id>1</user_id>
-    <cancion>ahora corren</cancion>
-    <texto_diario>me corro</texto_diario>
+    <cancion>SERPIENTE - Junior H</cancion>
+    <texto_diario>pippipipi...</texto_diario>
+    <ruta_foto>C:\Users\Usuario\Desktop\MyVibe_Dionicio_Esteve_Elghalbzouri_versionFinal\src\main\resources\images\ICONOCONLETRAENTERO.png</ruta_foto>
+  </entrada>
+  <entrada>
+    <id>6</id>
+    <fecha>2026-01-14T11:28:56</fecha>
+    <mood_id>7</mood_id>
+    <user_id>1</user_id>
+    <cancion>Sin poderte hablar Willie Colon</cancion>
+    <texto_diario>TE EXTRAÑO</texto_diario>
     <ruta_foto/>
   </entrada>
   <entrada>
     <id>5</id>
-    <fecha>2026-01-13T16:21:11</fecha>
+    <fecha>2026-01-14T11:28:24</fecha>
+    <mood_id>6</mood_id>
+    <user_id>1</user_id>
+    <cancion>7 DÍAS - Tito Doble P</cancion>
+    <texto_diario>siento miedo! xO</texto_diario>
+    <ruta_foto/>
+  </entrada>
+  <entrada>
+    <id>4</id>
+    <fecha>2026-01-14T11:27:43</fecha>
     <mood_id>5</mood_id>
     <user_id>1</user_id>
-    <cancion>yan block - talento</cancion>
-    <texto_diario>Es muy guarra</texto_diario>
+    <cancion>Cafuné - Micro tdh</cancion>
+    <texto_diario>me enamoré &lt;3</texto_diario>
     <ruta_foto/>
   </entrada>
   <entrada>
     <id>3</id>
-    <fecha>2026-01-12T20:45:27</fecha>
-    <mood_id>6</mood_id>
+    <fecha>2026-01-14T11:26:56</fecha>
+    <mood_id>2</mood_id>
     <user_id>1</user_id>
-    <cancion>marinero solo</cancion>
-    <texto_diario>lerolero</texto_diario>
-    <ruta_foto/>
+    <cancion>No tengo suerte en el amor - Yoskar Sarante</cancion>
+    <texto_diario>NO TENGO SUERTE EN EL AMOR!!!!!!!!:(</texto_diario>
+    <ruta_foto>C:\Users\Usuario\Desktop\myvibe1512\myvibe1512\myvibe1\src\main\resources\images\ICONOMYVIBEDEF.png</ruta_foto>
+  </entrada>
+  <entrada>
+    <id>2</id>
+    <fecha>2026-01-14T11:25:18</fecha>
+    <mood_id>1</mood_id>
+    <user_id>1</user_id>
+    <cancion>CANADA - Neo Pistea</cancion>
+    <texto_diario>MI PRIMO ESTÁ EN CANADÁ</texto_diario>
+    <ruta_foto>C:\Users\Usuario\Desktop\myvibe1512\myvibe1512\myvibe1\src\main\resources\images\myvibe1.PNG</ruta_foto>
   </entrada>
   <entrada>
     <id>1</id>
-    <fecha>2026-01-12T19:38:54</fecha>
-    <mood_id>1</mood_id>
+    <fecha>2026-01-14T11:24:06</fecha>
+    <mood_id>4</mood_id>
     <user_id>1</user_id>
-    <cancion>los vagos con los  vagos</cancion>
-    <texto_diario>dilotata</texto_diario>
-    <ruta_foto/>
+    <cancion>Die Hard - Kendrick Lamar</cancion>
+    <texto_diario>Die hard!!</texto_diario>
+    <ruta_foto>C:\Users\Usuario\Documents\League of Legends\Replays\EUW1-6423276922.rofl</ruta_foto>
   </entrada>
 </diario>

@@ -51,7 +51,7 @@ public class HibernateDAO implements IDiarioDAO { // DAO que usa Hibernate
             // Obtener usuario de la BD o usar root
             String user = dbProps.getProperty("db.user", "root");
             // Obtener contraseña o dejarla vacía
-            String pass = dbProps.getProperty("db.password", "");
+            String pass = dbProps.getProperty("db.password", "1708");
 
 
             // Propiedades específicas de Hibernate
