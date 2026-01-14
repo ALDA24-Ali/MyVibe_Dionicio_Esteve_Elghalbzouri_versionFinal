@@ -106,91 +106,115 @@ public class JDBCTransactionDAO implements IDiarioDAO {
     }
 
     // OBTENER UNA ENTRADA CONCRETA POR SU ID
-    @Override
-    public EntradaDiario getById(int id) {
-        String sql = "SELECT * FROM entries WHERE id=? AND user_id=?";
+   @Override
+public EntradaDiario getById(int id) {
 
-        try (Connection conn = getConnection();
-             PreparedStatement st = conn.prepareStatement(sql)) {
+    String sql = """
+        SELECT e.id, e.fecha, e.cancion, e.texto_diario, e.ruta_foto, e.mood_id, e.user_id,
+               m.nombre AS mood_nombre
+        FROM entries e
+        JOIN moods m ON e.mood_id = m.mood_id
+        WHERE e.id = ? AND e.user_id = ?
+    """;
 
-            // Indicamos el ID de la entrada que buscamos
+    try (Connection conn = getConnection();
+         PreparedStatement st = conn.prepareStatement(sql)) {
+
         st.setInt(1, id);
-
-        // Indicamos que debe ser del usuario logueado
         st.setInt(2, UserSession.userId);
-            ResultSet rs = st.executeQuery();// Ejecuta la consulta SELECT
 
-            if (rs.next()) {// Si existe una entrada con ese ID... significa que existe una fila.
+        try (ResultSet rs = st.executeQuery()) {
+            if (rs.next()) {
+
+                LocalDateTime fecha = null;
+                Timestamp ts = rs.getTimestamp("fecha");
+                if (ts != null) fecha = ts.toLocalDateTime();
+
                 EntradaDiario e = new EntradaDiario(
-                        rs.getTimestamp("fecha").toLocalDateTime(),
+                        fecha,
                         rs.getString("cancion"),
                         rs.getString("texto_diario"),
                         rs.getString("ruta_foto"),
                         rs.getInt("mood_id"),
+                        rs.getString("mood_nombre"),   // <-- nombre del mood
                         rs.getInt("user_id")
                 );
-                            // Asignamos el ID de la entrada
-            e.setId(rs.getInt("id"));
 
-            // Devolvemos la entrada encontrada
-            return e;
-
+                e.setId(rs.getInt("id"));
+                return e;
             }
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
         }
 
-        return null;// Si no se encuentra la entrada, devolvemos null
+    } catch (SQLException ex) {
+        ex.printStackTrace();
     }
+
+    return null;
+}
 
 
     // OBTENER TODAS LAS ENTRADAS DEL USUARIO LOGUEADO
 
     @Override
-    public List<EntradaDiario> getAll() {
-        List<EntradaDiario> lista = new ArrayList<>();// Creamos una lista vacía donde guardar las entradas
+public List<EntradaDiario> getAll() {
+    List<EntradaDiario> lista = new ArrayList<>();
 
-        String sql = "SELECT * FROM entries WHERE user_id=? ORDER BY fecha DESC";// Consulta para obtener todas las entradas del usuario
-    // ordenadas por fecha (la más reciente primero)
+    String sql = """
+        SELECT e.id, e.fecha, e.cancion, e.texto_diario, e.ruta_foto, e.mood_id, e.user_id,
+               m.nombre AS mood_nombre
+        FROM entries e
+        JOIN moods m ON e.mood_id = m.mood_id
+        WHERE e.user_id = ?
+        ORDER BY e.fecha DESC
+    """;
 
-        try (Connection conn = getConnection();
-             PreparedStatement st = conn.prepareStatement(sql)) {
+    try (Connection conn = getConnection();
+         PreparedStatement st = conn.prepareStatement(sql)) {
 
-            st.setInt(1, UserSession.userId);// Indicamos el usuario logueado
-            ResultSet rs = st.executeQuery();// Ejecutamos la consulta
+        st.setInt(1, UserSession.userId);
 
-            while (rs.next()) {// Recorremos todas las filas devueltas
-             // Creamos un objeto EntradaDiario por cada fila
+        try (ResultSet rs = st.executeQuery()) {
+            while (rs.next()) {
+
+                LocalDateTime fecha = null;
+                Timestamp ts = rs.getTimestamp("fecha");
+                if (ts != null) fecha = ts.toLocalDateTime();
+
                 EntradaDiario e = new EntradaDiario(
-                        rs.getTimestamp("fecha").toLocalDateTime(),
+                        fecha,
                         rs.getString("cancion"),
                         rs.getString("texto_diario"),
                         rs.getString("ruta_foto"),
                         rs.getInt("mood_id"),
+                        rs.getString("mood_nombre"),  // <-- nombre del mood
                         rs.getInt("user_id")
                 );
 
-                e.setId(rs.getInt("id")); // Asignamos el ID
-                lista.add(e);// Añadimos la entrada a la lista
+                e.setId(rs.getInt("id"));
+                lista.add(e);
             }
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
         }
 
-        return lista;// Devolvemos la lista con todas las entradas
+    } catch (SQLException ex) {
+        ex.printStackTrace();
     }
+
+    return lista;
+}
+
 
 @Override
 public List<EntradaDiario> getByUserId(int userId) {
     List<EntradaDiario> entradas = new ArrayList<>();
 
     String sql = """
-        SELECT id, fecha, cancion, texto_diario, ruta_foto, mood_id, user_id
-        FROM entries
-        WHERE user_id = ?
-        ORDER BY fecha DESC """;
+        SELECT e.id, e.fecha, e.cancion, e.texto_diario, e.ruta_foto, e.mood_id, e.user_id,
+               m.nombre AS mood_nombre
+        FROM entries e
+        JOIN moods m ON e.mood_id = m.mood_id
+        WHERE e.user_id = ?
+        ORDER BY e.fecha DESC
+    """;
 
     try (Connection conn = getConnection();
          PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -200,8 +224,9 @@ public List<EntradaDiario> getByUserId(int userId) {
         try (ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
 
-                java.sql.Timestamp ts = rs.getTimestamp("fecha");
-                LocalDateTime fecha = (ts != null) ? ts.toLocalDateTime() : null;
+                LocalDateTime fecha = null;
+                Timestamp ts = rs.getTimestamp("fecha");
+                if (ts != null) fecha = ts.toLocalDateTime();
 
                 EntradaDiario e = new EntradaDiario(
                         fecha,
@@ -209,6 +234,7 @@ public List<EntradaDiario> getByUserId(int userId) {
                         rs.getString("texto_diario"),
                         rs.getString("ruta_foto"),
                         rs.getInt("mood_id"),
+                        rs.getString("mood_nombre"), // <-- nombre del mood
                         rs.getInt("user_id")
                 );
 
@@ -223,6 +249,7 @@ public List<EntradaDiario> getByUserId(int userId) {
 
     return entradas;
 }
+
 
 
     @Override

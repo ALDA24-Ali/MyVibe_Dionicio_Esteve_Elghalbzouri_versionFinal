@@ -14,6 +14,7 @@ public class EntradaDiario {
 
     //claves foraneas:
     private int moodId;   // NUEVO
+    private String nombre; // NUEVO
     private int userId;   // NUEVO
 
 
@@ -24,13 +25,14 @@ public class EntradaDiario {
 
 //Constructor con parámetros para crear una nueva entrada de diario. El ID no se incluye porque es generado automáticamente por la base de datos.
     public EntradaDiario(LocalDateTime fecha, String cancion, String textoDiario,
-                         String rutaFoto, int moodId, int userId) {
+                         String rutaFoto, int moodId, String nombre, int userId) {
         this.fecha = fecha;
         this.cancion = cancion;
         this.textoDiario = textoDiario;
         this.rutaFoto = rutaFoto;
         this.moodId = moodId;
         this.userId = userId;
+        this.nombre = null;
     }
 
     // Getters y setters
@@ -51,6 +53,9 @@ public class EntradaDiario {
 
     public int getMoodId() { return moodId; }
     public void setMoodId(int moodId) { this.moodId = moodId; }
+
+    public String getNombre() { return nombre; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
 
     public int getUserId() { return userId; }
     public void setUserId(int userId) { this.userId = userId; }

@@ -223,13 +223,15 @@ public class NuevaEntradaFrame extends JFrame {
 
     // Creamos la entrada
     EntradaDiario entrada = new EntradaDiario(
-            LocalDateTime.now(),
-            cancion.isEmpty() ? null : cancion,
-            texto,
-            rutaFotoSeleccionada,
-            moodId,
-            userId
-    );
+        LocalDateTime.now(),
+        cancion.isEmpty() ? null : cancion,
+        texto,
+        rutaFotoSeleccionada,
+        moodId,
+        null,      // nombre del mood (se rellenará al hacer SELECT con JOIN)
+        userId
+);
+
 
     // Guardar en BD con JDBC (real)
     dao.IDiarioDAO diarioDAO = new dao.JDBCTransactionDAO();
